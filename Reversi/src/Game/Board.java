@@ -24,7 +24,12 @@ public class Board {
 				board[i][j] = new Piece(Square.EMPTY);
 			}
 		}
+		//TODO other initialisation
+		setDefaultPieces();
 
+	}
+	
+	private void setDefaultPieces(){
 		int middleOfBoard = getSizeOfBoard() / 2;
 		int middleOfBoardPlusOne = (getSizeOfBoard() / 2) + 1;
 
