@@ -81,9 +81,60 @@ public class Board {
 	
 	//TODO
 	public boolean isValidMove(int x, int y, Square squareColour) {
+		for (Direction dir : Direction.values()) {
+			if (checkLine(x,y,squareColour, dir)) {
+				return true;
+			}
+		}
 		return false;
 	}
 	
+	private boolean checkLine(int x, int y, Square squareColour, Direction dir) {
+		Square nextColour = getColour(getAdjacentX(x, dir), getAdjacentY(y, dir));
+		if (squareColour == Square.BLACK){
+			switch (nextColour) {
+	            case BLACK: return true;
+	            case EMPTY: return false;
+	            case WHITE: checkLine(getAdjacentX(x, dir), getAdjacentY(y, dir), nextColour, dir);
+	        }
+		} else {
+			switch (nextColour) {
+            	case WHITE: return true;
+            	case EMPTY: return false;
+            	case BLACK: checkLine(getAdjacentX(x, dir), getAdjacentY(y, dir), nextColour, dir);
+			}	
+		}	
+		return false;
+	}
+
+	private int getAdjacentY(int y, Direction dir) {
+		switch (dir) {
+        	case N:  return y++;
+        	case NE: return y++;
+        	case E:  return y;
+        	case SE: return y--;
+        	case S:  return y--;
+        	case SW: return y--;
+        	case W:  return y;
+        	case NW: return y++;
+		}
+		return y;
+	}
+
+	private int getAdjacentX(int x, Direction dir) {
+		switch (dir) {
+        	case N:  return x;
+        	case NE: return x++;
+			case E:  return x++;
+			case SE: return x++;
+			case S:  return x;
+			case SW: return x--;
+			case W:  return x--;
+			case NW: return x--;
+		}
+		return x;
+	}
+
 	public boolean validMoveExists(Square squareColour) {
 		boolean validMove = false;
 		for (int i = 1; i <= sizeOfBoard; i++) {
