@@ -90,49 +90,28 @@ public class Board {
 	}
 	
 	private boolean checkLine(int x, int y, Square squareColour, Direction dir) {
-		Square nextColour = getColour(getAdjacentX(x, dir), getAdjacentY(y, dir));
-		if (squareColour == Square.BLACK){
-			switch (nextColour) {
-	            case BLACK: return true;
-	            case EMPTY: return false;
-	            case WHITE: checkLine(getAdjacentX(x, dir), getAdjacentY(y, dir), nextColour, dir);
-	        }
+		Square nextColour = getColour(getAdjacent(x, y, dir).getFirst(), getAdjacent(x, y, dir).getSecond());
+		if (squareColour == nextColour) {
+				return true;
+		} else if (squareColour.opposite() == nextColour) { 
+				checkLine(getAdjacent(x, y, dir).getFirst(), getAdjacent(x, y, dir).getSecond(), nextColour, dir);
 		} else {
-			switch (nextColour) {
-            	case WHITE: return true;
-            	case EMPTY: return false;
-            	case BLACK: checkLine(getAdjacentX(x, dir), getAdjacentY(y, dir), nextColour, dir);
-			}	
-		}	
-		return false;
+				return false;
+		}
 	}
 
-	private int getAdjacentY(int y, Direction dir) {
+	private Pair<Integer, Integer> getAdjacent(int x, int y, Direction dir) {
 		switch (dir) {
-        	case N:  return y++;
-        	case NE: return y++;
-        	case E:  return y;
-        	case SE: return y--;
-        	case S:  return y--;
-        	case SW: return y--;
-        	case W:  return y;
-        	case NW: return y++;
+        	case N:  return new Pair<Integer, Integer>(x, y++);
+        	case NE: return new Pair<Integer, Integer>(x++, y++);
+        	case E:  return new Pair<Integer, Integer>(x++, y);
+        	case SE: return new Pair<Integer, Integer>(x++, y--);
+        	case S:  return new Pair<Integer, Integer>(x, y--);
+        	case SW: return new Pair<Integer, Integer>(x--, y--);
+        	case W:  return new Pair<Integer, Integer>(x--, y);
+        	case NW: return new Pair<Integer, Integer>(x--, y++);
 		}
-		return y;
-	}
-
-	private int getAdjacentX(int x, Direction dir) {
-		switch (dir) {
-        	case N:  return x;
-        	case NE: return x++;
-			case E:  return x++;
-			case SE: return x++;
-			case S:  return x;
-			case SW: return x--;
-			case W:  return x--;
-			case NW: return x--;
-		}
-		return x;
+		return new Pair<Integer, Integer>(x, y);
 	}
 
 	public boolean validMoveExists(Square squareColour) {
