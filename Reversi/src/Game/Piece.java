@@ -18,5 +18,9 @@ public class Piece {
 	{
 		this.piece = piece;
 	}
+	
+	public String toString(){
+		return piece.toString();
+	}
 
 }

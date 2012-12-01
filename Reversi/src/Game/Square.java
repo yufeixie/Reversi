@@ -1,4 +1,4 @@
-
+package Game;
 
 public enum Square {
 	EMPTY {
