@@ -4,24 +4,35 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Game {
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	
+	
+	private Player[] players = new Player[2];
+	private Board board;
+	
+	public Game(Scanner input) {
+		board = checkCustomBoard(input);
+		players[0] = createNewPlayer(1, new Piece(Square.WHITE), input);
+		players[1] = createNewPlayer(2, new Piece(Square.BLACK), input);
+		board.display();
+	}
+	
+	private static Player createNewPlayer(int playerNumber, Piece piece,
+			Scanner input) {
+		String name;
+		System.out.println("Player " + playerNumber
+				+ " please enter your name: ");
+		name = input.nextLine();
+		System.out.println("Hello " + name + ", you will be player "
+				+ playerNumber + " and your piece is : " + piece.getPiece());
+		return new Player(name, 2, piece);
+	}
+	
+	public void run(Scanner input) {
 		int currentPlayer = 0;
 		ArrayList<Direction>validDirections;
 		Square currentPiece;
 		int x, y, scoreChange;
 		String nextCoordinate;
-		Scanner input = new Scanner(System.in);
-		System.out.println("Reversi");
-		Player[] players = new Player[2];
-		Board board = checkCustomBoard(input);
-		players[0] = createNewPlayer(1, new Piece(Square.WHITE), input);
-		players[1] = createNewPlayer(2, new Piece(Square.BLACK), input);
-		System.out.println("Press any key.");
-		input.nextLine();
-		board.display();
-		
 		
 		while(!board.gameOver()){
 			
@@ -62,10 +73,9 @@ public class Game {
 			System.out.println("It's a draw!");
 			System.out.println("The final score for both players is " + player1Score);
 		}
-		input.close();
 	}
-
-	private static Board checkCustomBoard(Scanner input) {
+	
+	private Board checkCustomBoard(Scanner input) {
 		String ownSize, customSize;
 		int size = 0;
 
@@ -93,17 +103,20 @@ public class Game {
 
 		return new Board();
 	}
-
-	private static Player createNewPlayer(int playerNumber, Piece piece,
-			Scanner input) {
-		String name;
-		System.out.println("Player " + playerNumber
-				+ " please enter your name: ");
-		name = input.nextLine();
-		System.out.println("Hello " + name + ", you will be player "
-				+ playerNumber + " and your piece is : " + piece.getPiece());
-		return new Player(name, 2, piece);
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		System.out.println("Reversi");
+		Scanner input = new Scanner(System.in);
+		Game game = new Game(input);
+		game.run(input);		
+		input.close();
 	}
+
+	
+
+	
 
 
 }
