@@ -1,5 +1,7 @@
 package game;
 
+import java.util.ArrayList;
+
 public class Board {
 
 	Piece[][] board;
@@ -80,7 +82,7 @@ public class Board {
 	}
 	
 	//TODO
-	public boolean isValidMove(int x, int y, Square squareColour) {
+	private boolean isValidMove(int x, int y, Square squareColour) {
 		boolean found = false;
 		if(isInBoundary(x, y)) {
 			if ((board[x-1][y-1]).getPiece().equals(Square.EMPTY)){
@@ -129,15 +131,15 @@ public class Board {
 	}
 
 	public boolean validMoveExists(Square squareColour) {
-		boolean validMove = false;
+		//boolean validMove = false;
 		for (int i = 1; i <= sizeOfBoard; i++) {
 			for (int j = 1; j <= sizeOfBoard; j++) {
 				if (isValidMove(i, j, squareColour)) {
-					return (validMove = true);
+					return true;
 				}
 			}
 		}
-		return validMove;
+		return false;
 	}
 	
 	public void display() {
@@ -169,5 +171,52 @@ public class Board {
 			System.out.print("-");
 			System.out.println();
 		}
+	}
+
+	public boolean gameOver() {
+		// TODO Auto-generated method stub
+		return !(validMoveExists(Square.BLACK) || validMoveExists(Square.WHITE));
+		
+	}
+
+	public ArrayList<Direction> checkMoves(int x, int y, Square squareColour) {
+		// TODO Auto-generated method stub
+		boolean found = false;
+		ArrayList<Direction> validDirections = null;
+		if(isInBoundary(x, y)) {
+			if ((board[x-1][y-1]).getPiece().equals(Square.EMPTY)){
+				for (Direction dir : Direction.values()) {
+					if (checkLine(x,y,squareColour, dir, found)) {
+						if (validDirections == null){
+							validDirections = new ArrayList<Direction>();
+						}
+						validDirections.add(dir);
+					}
+				}
+			}
+		}
+		return validDirections;
+	}
+	
+	private int switchRestOfPieces(int x, int y, Square colour, Direction dir){
+		if (board[x-1][y-1].getPiece() == colour){
+			return 0;
+		}
+		Pair<Integer,Integer> nextCoordinate = getAdjacent(x, y, dir);
+		board[x-1][y-1].setPiece(colour);
+		return 1 + switchRestOfPieces(nextCoordinate.getFirst(), nextCoordinate.getSecond(), colour, dir);
+	}
+
+	public int makeMove(int x, int y, Square colour,
+			ArrayList<Direction> validDirections) {
+		// TODO Auto-generated method stub
+		int scoreChange = 1;
+		board[x-1][y-1].setPiece(colour);
+		Pair<Integer,Integer> nextCoordinate;
+		for(Direction dir: validDirections){
+			nextCoordinate = getAdjacent(x, y, dir);
+			scoreChange += switchRestOfPieces(nextCoordinate.getFirst(), nextCoordinate.getSecond(), colour, dir);
+		}
+		return scoreChange;
 	}
 }
