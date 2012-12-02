@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import game.Board;
-import game.Square;
+import Game.Board;
+import Game.Square;
 
 public class RevTests {
 	@Test
