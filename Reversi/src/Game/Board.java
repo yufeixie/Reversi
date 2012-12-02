@@ -1,4 +1,4 @@
-package Game;
+package game;
 
 import java.util.ArrayList;
 
@@ -45,7 +45,7 @@ public class Board {
 		return board[x - 1][y - 1];
 	}
 	
-	private void setPiece(int x, int y, Square piece) {
+	public void setPiece(int x, int y, Square piece) {
 		board[x - 1][y - 1].setPiece(piece);
 
 	}
