@@ -1,10 +1,16 @@
 package Game;
 
-public class Player {
+/**
+ * 
+ * Represents a player of Othello.
+ * The player carries their score and piece.
+ *
+ */
+public class Player implements GamePlayer{
 	
-	private String name;
+	private final String name;
 	private int score;
-	private Piece piece;
+	private final Piece piece;
 
 	public Player(String name, int score, Piece piece)
 	{
@@ -13,22 +19,18 @@ public class Player {
 		this.piece = piece;
 	}
 	
-	String getName()
-	{
-		return name;
-	}
-	
-	int getScore()
+	@Override
+	public int getScore()
 	{
 		return score;
 	}
 	
-	Piece getPiece()
+	public Piece getPiece()
 	{
 		return piece;
 	}
 	
-	void setScore(int change)
+	public void adjustScore(int change)
 	{
 		score += change;
 	}
@@ -36,6 +38,6 @@ public class Player {
 	@Override
 	public String toString()
 	{
-		return null;
+		return name;
 	}
 }

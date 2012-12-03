@@ -4,78 +4,148 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import Game.Board;
-import Game.Square;
+import Game.*;
 
 public class RevTests {
+	
+	
+	/*
+	 * Piece Tests
+	 */
 	@Test
-	public void testSetPiece() {
-		Board gameBoard = new Board();
-
-		gameBoard.setPiece(3, 4, Square.BLACK);
-
-		assertEquals(Square.BLACK, gameBoard.getPiece(3, 4).getPiece());
+	public void testPieceStrings(){
+		Piece square = Piece.BLACK;
+		assertTrue(square.toString().equals("X"));
+		square = Piece.WHITE;
+		assertTrue(square.toString().equals("O"));
+		square = Piece.EMPTY;
+		assertTrue(square.toString().equals(" "));
 	}
-
+	
 	@Test
-	public void testValidMoves() {
-		Board gameBoard = new Board();
-
-		assertTrue(gameBoard.isValidMove(3, 4, Square.BLACK));
-		assertTrue(gameBoard.isValidMove(4, 3, Square.BLACK));
-		assertTrue(gameBoard.isValidMove(5, 6, Square.BLACK));
-		assertFalse(gameBoard.isValidMove(3, 5, Square.BLACK));
-		assertFalse(gameBoard.isValidMove(10, 5, Square.BLACK));
-		assertFalse(gameBoard.isValidMove(4, 4, Square.BLACK));
+	public void testPieceOpposites(){
+		Piece square = Piece.BLACK;
+		assertEquals(square.opposite(), Piece.WHITE);
+		square = Piece.WHITE;
+		assertEquals(square.opposite(), Piece.BLACK);
+		square = Piece.EMPTY;
+		assertEquals(square.opposite(), Piece.EMPTY);
 	}
-
+	
+	/*
+	 * Square Tests
+	 */
 	@Test
-	public void testCapture() {
-		Board gameBoard = new Board();
-
-		gameBoard.setPiece(3, 4, Square.BLACK);
-		gameBoard.capturePieces(3, 4, Square.BLACK);
-
-		assertEquals(Square.BLACK, gameBoard.getPiece(4, 4).getPiece());
+	public void testGetPieceAndInitialisation(){
+		Square piece;
+		
+		piece = new Square(Piece.BLACK);
+		assertEquals(piece.getPiece(), Piece.BLACK);
+		piece = new Square(Piece.WHITE);
+		assertEquals(piece.getPiece(), Piece.WHITE);
+		piece = new Square(Piece.EMPTY);
+		assertEquals(piece.getPiece(), Piece.EMPTY);
 	}
-
+	
 	@Test
-	public void testCaptureSetSequence() {
-		Board gameBoard = new Board();
-
-		gameBoard.setPiece(4, 3, Square.BLACK);
-		gameBoard.capturePieces(4, 3, Square.BLACK);
-
-		assertEquals(Square.BLACK, gameBoard.getPiece(4, 4).getPiece());
-
-		gameBoard.setPiece(3, 5, Square.WHITE);
-		gameBoard.capturePieces(3, 5, Square.WHITE);
-
-		assertEquals(Square.WHITE, gameBoard.getPiece(4, 5).getPiece());
+	public void testSetPiece(){
+		Square piece;
+		
+		piece = new Square(Piece.BLACK);
+		piece.setPiece(Piece.WHITE);
+		assertEquals(piece.getPiece(), Piece.WHITE);
+		
+		piece.setPiece(Piece.EMPTY);
+		assertEquals(piece.getPiece(), Piece.EMPTY);
+		
+		piece.setPiece(Piece.BLACK);
+		assertEquals(piece.getPiece(), Piece.BLACK);
+		
+		piece.setPiece(Piece.WHITE);
+		assertEquals(piece.getPiece(), Piece.WHITE);
+		
+		piece.setPiece(Piece.BLACK);
+		assertEquals(piece.getPiece(), Piece.BLACK);
+		
+		piece.setPiece(Piece.EMPTY);
+		assertEquals(piece.getPiece(), Piece.EMPTY);
+		
+		piece.setPiece(Piece.WHITE);
+		assertEquals(piece.getPiece(), Piece.WHITE);
 	}
-
-	@Test
-	public void testNoValidMove() {
-		Board gameBoard = new Board();
-		gameBoard.setPiece(4, 4, Square.BLACK);
-		gameBoard.setPiece(5, 5, Square.BLACK);
-		assertFalse(gameBoard.validMoveExists(Square.WHITE));
+	
+	/*
+	 * Player Tests
+	 */
+	public void testPlayerInitialisation(){
+		String name = "playerName";
+		int score = 2;
+		Piece square = Piece.BLACK;
+		Player player = new Player(name, score, square);
+		assertTrue(name.equals(player.toString()));
+		assertEquals(score, player.getScore());
+		assertEquals(square, player.getPiece());
 	}
-
-
+	
+	public void testPlayerScoreChange(){
+		int score = 2;
+		int adjustment = 0;
+		Player player = new Player("name", score, Piece.BLACK);
+		
+		player.adjustScore(adjustment);
+		score += adjustment;
+		assertEquals(score, player.getScore());
+		
+		adjustment = 12;
+		player.adjustScore(adjustment);
+		score += adjustment;
+		assertEquals(score, player.getScore());
+		
+		adjustment = -7;
+		player.adjustScore(adjustment);
+		score += adjustment;
+		assertEquals(score, player.getScore());	
+	}
+	
 	@Test
-	public void testHasValidMoves() {
-		Board gameBoard = new Board(4);
-
-		assertTrue(gameBoard.validMoveExists(Square.BLACK));
-		assertTrue(gameBoard.validMoveExists(Square.WHITE));
-
-		gameBoard.setPiece(2, 1, Square.BLACK);
-		gameBoard.capturePieces(2, 1, Square.BLACK);
-		gameBoard.setPiece(4, 3, Square.BLACK);
-		gameBoard.capturePieces(4, 3, Square.BLACK);
-
-		assertFalse(gameBoard.validMoveExists(Square.WHITE));
+	public void testBoardCreation() {
+		Board gameBoard = new Board();
+		
+		assertNull(gameBoard.checkMoves(new Pair<Integer, Integer> (1, 1), Piece.BLACK));
+		assertNull(gameBoard.checkMoves(new Pair<Integer, Integer> (1, 1), Piece.WHITE));
+		
+		
+		assertNotNull(gameBoard.checkMoves(new Pair<Integer, Integer> (3, 4), Piece.BLACK));
+		assertNotNull(gameBoard.checkMoves(new Pair<Integer, Integer> (4, 3), Piece.BLACK));
+		assertNotNull(gameBoard.checkMoves(new Pair<Integer, Integer> (5, 6), Piece.BLACK));
+		assertNotNull(gameBoard.checkMoves(new Pair<Integer, Integer> (6, 5), Piece.BLACK));
+		
+		assertNotNull(gameBoard.checkMoves(new Pair<Integer, Integer> (3, 5), Piece.WHITE));
+		assertNotNull(gameBoard.checkMoves(new Pair<Integer, Integer> (5, 3), Piece.WHITE));
+		assertNotNull(gameBoard.checkMoves(new Pair<Integer, Integer> (4, 6), Piece.WHITE));
+		assertNotNull(gameBoard.checkMoves(new Pair<Integer, Integer> (6, 4), Piece.WHITE));
+		
+		assertNull(gameBoard.checkMoves(new Pair<Integer, Integer> (3, 3), Piece.WHITE));
+		assertNull(gameBoard.checkMoves(new Pair<Integer, Integer> (3, 3), Piece.BLACK));
+		
+		assertNull(gameBoard.checkMoves(new Pair<Integer, Integer> (3, 6), Piece.WHITE));
+		assertNull(gameBoard.checkMoves(new Pair<Integer, Integer> (3, 6), Piece.BLACK));
+		
+		assertNull(gameBoard.checkMoves(new Pair<Integer, Integer> (6, 3), Piece.WHITE));
+		assertNull(gameBoard.checkMoves(new Pair<Integer, Integer> (6, 3), Piece.BLACK));
+		
+		assertNull(gameBoard.checkMoves(new Pair<Integer, Integer> (6, 6), Piece.WHITE));
+		assertNull(gameBoard.checkMoves(new Pair<Integer, Integer> (6, 6), Piece.BLACK));
+		
+		assertNull(gameBoard.checkMoves(new Pair<Integer, Integer> (4, 4), Piece.WHITE));
+		assertNull(gameBoard.checkMoves(new Pair<Integer, Integer> (4, 4), Piece.BLACK));
+		assertNull(gameBoard.checkMoves(new Pair<Integer, Integer> (4, 5), Piece.WHITE));
+		assertNull(gameBoard.checkMoves(new Pair<Integer, Integer> (4, 5), Piece.BLACK));
+		assertNull(gameBoard.checkMoves(new Pair<Integer, Integer> (5, 4), Piece.WHITE));
+		assertNull(gameBoard.checkMoves(new Pair<Integer, Integer> (5, 4), Piece.BLACK));
+		assertNull(gameBoard.checkMoves(new Pair<Integer, Integer> (5, 5), Piece.WHITE));
+		assertNull(gameBoard.checkMoves(new Pair<Integer, Integer> (5, 5), Piece.BLACK));
+		
 	}
 
 }

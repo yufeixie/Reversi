@@ -2,112 +2,116 @@ package Game;
 
 import java.util.ArrayList;
 
-public class Board {
+/**
+ * 
+ * Represents an Othello board of a variable size.
+ * 
+ */
+public class Board implements GameBoard {
 
-	Piece[][] board;
+	Square[][] board;
 	private final int DEFAULTSIZE = 8;
 	private final int sizeOfBoard;
 
 	public Board() {
 		sizeOfBoard = DEFAULTSIZE;
-		board = new Piece[DEFAULTSIZE][DEFAULTSIZE];
+		board = new Square[DEFAULTSIZE][DEFAULTSIZE];
 		initialiseBoard();
 	}
 
 	public Board(int size) {
 		sizeOfBoard = size;
-		board = new Piece[size][size];
+		board = new Square[size][size];
 		initialiseBoard();
 	}
 
+	/*
+	 * The following method sets all squares on the board to be empty.
+	 */
 	private void initialiseBoard() {
 		for (int i = 0; i < getSizeOfBoard(); i++) {
 			for (int j = 0; j < getSizeOfBoard(); j++) {
-				board[i][j] = new Piece(Square.EMPTY);
+				board[i][j] = new Square(Piece.EMPTY);
 			}
 		}
-		//TODO other initialisation
 		setDefaultPieces();
 
 	}
-	
-	private void setDefaultPieces(){
+
+	/*
+	 * The following method places the first four initial pieces
+	 */
+	private void setDefaultPieces() {
 		int middleOfBoard = getSizeOfBoard() / 2;
-		int middleOfBoardPlusOne = (getSizeOfBoard() / 2) + 1;
+		int middleOfBoardPlusOne = middleOfBoard + 1;
 
-		setPiece(middleOfBoard, middleOfBoard, Square.WHITE);
-		setPiece(middleOfBoardPlusOne, middleOfBoard, Square.BLACK);
-		setPiece(middleOfBoard, middleOfBoardPlusOne, Square.BLACK);
-		setPiece(middleOfBoardPlusOne, middleOfBoardPlusOne, Square.WHITE);
+		setPiece(new Pair<Integer, Integer>(middleOfBoard, middleOfBoard),
+				Piece.WHITE);
+		setPiece(
+				new Pair<Integer, Integer>(middleOfBoardPlusOne, middleOfBoard),
+				Piece.BLACK);
+		setPiece(
+				new Pair<Integer, Integer>(middleOfBoard, middleOfBoardPlusOne),
+				Piece.BLACK);
+		setPiece(new Pair<Integer, Integer>(middleOfBoardPlusOne,
+				middleOfBoardPlusOne), Piece.WHITE);
 	}
 
-	public Piece getPiece(int x, int y) {
-		return board[x - 1][y - 1];
-	}
-	
-	public void setPiece(int x, int y, Square piece) {
-		board[x - 1][y - 1].setPiece(piece);
+	private void setPiece(Pair<Integer, Integer> coords, Piece piece) {
+		board[coords.getFirst() - 1][coords.getSecond() - 1].setPiece(piece);
 
 	}
 
-	private Square getColour(int x, int y) {
-		return board[x - 1][y - 1].getPiece();
+	private Piece getColour(Pair<Integer, Integer> coords) {
+		return board[coords.getFirst() - 1][coords.getSecond() - 1].getPiece();
 	}
 
-	public Piece[][] getBoard() {
-		return board;
-	}
-
-	public int getSizeOfBoard() {
+	private int getSizeOfBoard() {
 		return sizeOfBoard;
 	}
 
-	private boolean isInBoundary(int x, int y) {
-		int column = x - 1;
-		int row = y - 1;
+	private boolean isInBoundary(Pair<Integer, Integer> coords) {
+		int column = coords.getFirst() - 1;
+		int row = coords.getSecond() - 1;
 		return column >= 0 && row >= 0 && column < getSizeOfBoard()
 				&& row < getSizeOfBoard();
 	}
 
-	public int countNoOfPieces(Square squareColour) {
-		int numberOfSameColouredPieces = 0;
-		for (int i = 0; i < sizeOfBoard; i++) {
-			for (int j = 0; j < sizeOfBoard; j++) {
-				if (board[i][j].getPiece() == squareColour) {
-					numberOfSameColouredPieces++;
-				}
-			}
-		}
-		return numberOfSameColouredPieces;
-	}
-	
-	//TODO
-	private boolean isValidMove(int x, int y, Square squareColour) {
+	private boolean isValidMove(Pair<Integer, Integer> coords,
+			Piece squareColour) {
 		boolean found = false;
-		if(isInBoundary(x, y)) {
-			if ((board[x-1][y-1]).getPiece().equals(Square.EMPTY)){
+		if (isInBoundary(coords)) {
+			if ((board[coords.getFirst() - 1][coords.getSecond() - 1])
+					.getPiece().equals(Piece.EMPTY)) {
 				for (Direction dir : Direction.values()) {
-					if (checkLine(x,y,squareColour, dir, found)) {
+					if (checkLine(coords, squareColour, dir, found)) {
 						return true;
 					}
-				
+
 				}
 				return false;
 			}
 		}
 		return false;
 	}
-	
-	private boolean checkLine(int x, int y, Square squareColour, Direction dir, boolean found) {
-		if (isInBoundary(getAdjacent(x, y, dir).getFirst(), getAdjacent(x, y, dir).getSecond())){
-			Square nextColour = getColour(getAdjacent(x, y, dir).getFirst(), getAdjacent(x, y, dir).getSecond());
+
+	/*
+	 * Used to check whether a direction of travel would be valid by searching
+	 * for the same coloured piece in the direction of travel after finding an
+	 * opposite coloured piece.
+	 */
+	private boolean checkLine(Pair<Integer, Integer> coords,
+			Piece squareColour, Direction dir, boolean found) {
+		if (isInBoundary(getAdjacent(coords, dir))) {
+			Piece nextColour = getColour(getAdjacent(coords, dir));
 			if (squareColour == nextColour) {
-				if (!found){
+				if (!found) {
 					return false;
 				}
 				return true;
-			} else if (squareColour.opposite() == nextColour) { 
-				return checkLine(getAdjacent(x, y, dir).getFirst(), getAdjacent(x, y, dir).getSecond(), squareColour, dir, true);
+			} else if (squareColour.opposite() == nextColour) {
+				return checkLine(getAdjacent(coords, dir), squareColour, dir,
+						true);
 			} else {
 				return false;
 			}
@@ -116,32 +120,49 @@ public class Board {
 		}
 	}
 
-	private Pair<Integer, Integer> getAdjacent(int x, int y, Direction dir) {
+	/*
+	 * Finds the next pair of coordinates in the current direction of travel.
+	 */
+	private Pair<Integer, Integer> getAdjacent(Pair<Integer, Integer> coords,
+			Direction dir) {
+		int x = coords.getFirst();
+		int y = coords.getSecond();
 		switch (dir) {
-        	case N:  return new Pair<Integer, Integer>(x, --y);
-        	case NE: return new Pair<Integer, Integer>(++x, --y);
-        	case E:  return new Pair<Integer, Integer>(++x, y);
-        	case SE: return new Pair<Integer, Integer>(++x, ++y);
-        	case S:  return new Pair<Integer, Integer>(x, ++y);
-        	case SW: return new Pair<Integer, Integer>(--x, ++y);
-        	case W:  return new Pair<Integer, Integer>(--x, y);
-        	case NW: return new Pair<Integer, Integer>(--x, --y);
+		case N:
+			return new Pair<Integer, Integer>(x, --y);
+		case NE:
+			return new Pair<Integer, Integer>(++x, --y);
+		case E:
+			return new Pair<Integer, Integer>(++x, y);
+		case SE:
+			return new Pair<Integer, Integer>(++x, ++y);
+		case S:
+			return new Pair<Integer, Integer>(x, ++y);
+		case SW:
+			return new Pair<Integer, Integer>(--x, ++y);
+		case W:
+			return new Pair<Integer, Integer>(--x, y);
+		case NW:
+			return new Pair<Integer, Integer>(--x, --y);
 		}
 		return new Pair<Integer, Integer>(x, y);
 	}
 
-	public boolean validMoveExists(Square squareColour) {
-		//boolean validMove = false;
+	/*
+	 * Searches for a valid move for a given colour type.
+	 */
+	protected boolean validMoveExists(Piece squareColour) {
 		for (int i = 1; i <= sizeOfBoard; i++) {
 			for (int j = 1; j <= sizeOfBoard; j++) {
-				if (isValidMove(i, j, squareColour)) {
+				if (isValidMove(new Pair<Integer, Integer>(i, j), squareColour)) {
 					return true;
 				}
 			}
 		}
 		return false;
 	}
-	
+
+	@Override
 	public void display() {
 		System.out.print("  ");
 		char letter = 'A';
@@ -173,21 +194,26 @@ public class Board {
 		}
 	}
 
+	@Override
 	public boolean gameOver() {
-		// TODO Auto-generated method stub
-		return !(validMoveExists(Square.BLACK) || validMoveExists(Square.WHITE));
-		
+		return !(validMoveExists(Piece.BLACK) || validMoveExists(Piece.WHITE));
+
 	}
 
-	public ArrayList<Direction> checkMoves(int x, int y, Square squareColour) {
-		// TODO Auto-generated method stub
+	/*
+	 * Checks for a valid Othello move. The resulting List will be null if the
+	 * move is invalid.
+	 */
+	public ArrayList<Direction> checkMoves(Pair<Integer, Integer> coords,
+			Piece squareColour) {
 		boolean found = false;
 		ArrayList<Direction> validDirections = null;
-		if(isInBoundary(x, y)) {
-			if ((board[x-1][y-1]).getPiece().equals(Square.EMPTY)){
+		if (isInBoundary(coords)) {
+			if ((board[coords.getFirst() - 1][coords.getSecond() - 1])
+					.getPiece().equals(Piece.EMPTY)) {
 				for (Direction dir : Direction.values()) {
-					if (checkLine(x,y,squareColour, dir, found)) {
-						if (validDirections == null){
+					if (checkLine(coords, squareColour, dir, found)) {
+						if (validDirections == null) {
 							validDirections = new ArrayList<Direction>();
 						}
 						validDirections.add(dir);
@@ -197,25 +223,32 @@ public class Board {
 		}
 		return validDirections;
 	}
-	
-	private int switchRestOfPieces(int x, int y, Square colour, Direction dir){
-		if (board[x-1][y-1].getPiece() == colour){
+
+	/*
+	 * Switches pieces of the opposite colour to that of the player's colour.
+	 * The resulting integer represents the score change of the players.
+	 */
+	private int switchRestOfPieces(Pair<Integer, Integer> coords, Piece colour,
+			Direction dir) {
+		if (board[coords.getFirst() - 1][coords.getSecond() - 1].getPiece() == colour) {
 			return 0;
 		}
-		Pair<Integer,Integer> nextCoordinate = getAdjacent(x, y, dir);
-		board[x-1][y-1].setPiece(colour);
-		return 1 + switchRestOfPieces(nextCoordinate.getFirst(), nextCoordinate.getSecond(), colour, dir);
+		Pair<Integer, Integer> nextCoordinate = getAdjacent(coords, dir);
+		board[coords.getFirst() - 1][coords.getSecond() - 1].setPiece(colour);
+		return 1 + switchRestOfPieces(nextCoordinate, colour, dir);
 	}
-
-	public int makeMove(int x, int y, Square colour,
+	
+	/*
+	 * Carries out the process of making a valid move.
+	 */
+	protected int makeMove(Pair<Integer, Integer> coords, Piece colour,
 			ArrayList<Direction> validDirections) {
-		// TODO Auto-generated method stub
 		int scoreChange = 1;
-		board[x-1][y-1].setPiece(colour);
-		Pair<Integer,Integer> nextCoordinate;
-		for(Direction dir: validDirections){
-			nextCoordinate = getAdjacent(x, y, dir);
-			scoreChange += switchRestOfPieces(nextCoordinate.getFirst(), nextCoordinate.getSecond(), colour, dir);
+		board[coords.getFirst() - 1][coords.getSecond() - 1].setPiece(colour);
+		Pair<Integer, Integer> nextCoordinate;
+		for (Direction dir : validDirections) {
+			nextCoordinate = getAdjacent(coords, dir);
+			scoreChange += switchRestOfPieces(nextCoordinate, colour, dir);
 		}
 		return scoreChange;
 	}
