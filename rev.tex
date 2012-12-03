@@ -20,21 +20,21 @@
 The main idea of this project was to recreate Othello and to properly design the implementation of the game. The idea of this report is to illustrate the various techniques, design patterns and concepts that have been implemented during the conceptualisation and creation of the game. There were several key areas that were considered during this process. These include the appropriate use of design patterns and their trades offs, the method in which code was developed, duplication of code and coupling.
 
 \section{Using Java}
+Java is an object-oriented language. The game board, players and pieces can all be viewed as objects that interact with each other, which naturally allows an object-oriented to efficiently model the game. Java runs on its own virtual machine meaning the game can be run on any operating system that has the Java Virtual Machine.
 
 \section{UML diagram}
+See next page.
 
-\begin{figure}[ht!]
-\centering
-\includegraphics{umlDiagram.png}
-\caption{A simple caption}
-\label{overflow}
+\begin{figure}
+\centering \includegraphics[width=180mm]{umlDiagram} 
 \end{figure}
 
-\begin{figure}[htb]
-\includegraphics{umlDiagram.png}
-\end{figure}
 
 \subsection{Analysis on UML}
+As the game can be interpreted as an object-oriented problem, it can be modeled by Unified Modeling Language, UML, see next page. The model contains two enumerated types: Piece and Direction; these represent the contents of a square on the board and the direction in which a move is valid from a particular point respectively.  Here enumerated types are an efficient design implementation as they allow the code to be understood easily and the enumerations can contain their own methods, i.e. how the enumerations can be represented if outputted. The diagram also contains interfaces, which can be used to extend the program to board games. A class containing generic types is also used, Pair, generic types allow a programmer to extend the same idea to sets of differing types hence removing duplicated code. The remaining classes represent a player, the Othello board and the game. The Game class handles input, output and the running of the game.
+
+\section{Test Driven Development}
+Upon creating the UML diagram, a basis of the design and functionality for the Othello game was established. Test cases were written based on the assumption that the completed code would behave as expected. Test driven development allowed test cases based on expectations of functionality to be written rather than focusing on how the code was written. However, while coding the program, certain features were changed that caused deviation from the UML, these changes may have occurred to allow a more efficient form of coding, causing some of the tests. Although there were limits to test driven development, the advantages outweighed the disadvantages as the tests were based on functionality, which allowed bugs to be discovered that may have been missed if tests were created based on how the methods were written. Once the tests had been passed, refactoring of the code was done, so that future programmers may easily interpret the code.
 
 \section{Design Concepts}
 \subsection{Abstaction and Refinement}
@@ -49,35 +49,16 @@ The idea of modularity has also been shown whereby the program has been split in
 An effort has also been made to conceal any methods which do not need to be visible from anything that does not need to call it. Though the use of encapsulation, the integrity of the program is also maintained and the complexity is also reduced since there are few interdependencies between modules. For example, in the Board class, certain methods are defined to be private as they are only called within the class, so visibility is minimised. Data structures are also used to simplify the implementation as well as make the program easy to understand. An arraylist has been implemented to store the directions in which pieces can be captured to make it easier to handle during processing. Furthermore, a data structure named pairwas created, which will allow the coordinates of each move to be stored and processed. This makes using the board much easier since rather than passing two separate parameters for the coordinates, they are placed in one data structure which makes the system much more robust. An enumeration is also used to store the status of each square to remove any possible amibuiguities from the program.
 
 \section{Design Patterns}
-\subsection{Creational Patterns}
+Listed below are a few of the design patterns that have been incorporated into the program:
 \begin{itemize}
 
-    \item
-    The parts of the list are called items here too.
+    \item Abstract Factory - The use of interfaces to create dependent classes. This was used when creating the Board and Player classes to allow the program to be extended to other games.
+
+    \item Builder - The process of separation the construction of an object to increase functionality. This was used in the Board class to allow custom and default sized boards to be handled.
+
+    \item Module Pattern - Grouping related elements into one. This is shown by the use of separate packages for the tests and the game files.
     
 \end{itemize}
-\subsection{Structural Patterns}
-\begin{itemize}
-
-    \item
-    The parts of the list are called items here too.
-    
-\end{itemize}
-\subsection{Behavioral Patterns}
-\begin{itemize}
-
-    \item
-    The parts of the list are called items here too.
-    
-\end{itemize}
-\subsection{Concurrency Patterns}
-\begin{itemize}
-
-    \item
-    The parts of the list are called items here too.
-    
-\end{itemize}
-
 \section{Design Considerations}
 
 \begin{itemize}
@@ -90,7 +71,16 @@ An effort has also been made to conceal any methods which do not need to be visi
  
 \end{itemize}
 
+\section{Consequences of our design choices}
+In terms of coupling and cohesion, the program currently has data coupling, where modules share data only through parameters and there are no other ways in which data is shared. The advantage of this is that if one module changes, it shouldn't have much of an effect on another module since data is only passed through the parameters and unless they are changed, it should not affect another module. Another advantage of low coupling is that modules can be reused as a result. In terms of cohesion, the program currently has high cohesion since methods are strongly related to another and they carry out similar processes to each other. For example, in the player class, every method and variable is directly related to a player and there are no unnecessary variables. The consequence of this is that both code reuse and readability are increased in effectiveness and classes are robust and reliable. As demonstrated in both the screenshot and the test driven development, the program is functionally correct and is robust, so incorrect inputs are rejected. The program is quite flexible since we have the implementation of interfaces and by splitting up the methods into many separate methods, it can easily be modified through the overwriting different classes.
+
+
 \section{Screenshot demonstrating Othello}
+Shown below are two screenshots of Othello working, one a default game and another, a custom game.
+
+\begin{figure}
+\centering \includegraphics[width=150mm,height=200mm]{reversi} 
+\end{figure}
 
 \end{document}
 
