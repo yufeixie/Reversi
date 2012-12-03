@@ -102,7 +102,12 @@ public class Game {
 				nextCoordinate = input.next();
 				x = 1 + (nextCoordinate.toUpperCase().charAt(0) - 'A');
 				nextCoordinate = input.next();
-				y = Integer.parseInt(nextCoordinate);
+				try {
+					y = Integer.parseInt(nextCoordinate);
+				} catch (NumberFormatException e) {
+					System.out.println("You have not entered a valid set of coordinates.");
+					y = -1;
+				}
 				coords = new Pair<Integer, Integer>(x, y);
 				validDirections = board.checkMoves(coords, currentPiece);
 			} while ((validDirections == null));
