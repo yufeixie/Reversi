@@ -16,53 +16,49 @@
 \maketitle            % generates the title from the data above
 
 \section{Introduction}
+The main idea of this project was to recreate Othello and to properly design the implementation of the game. The idea of this report is to illustrate the various techniques, design patterns and concepts that have been implemented during the conceptualisation and creation of the game. There were several key areas that were considered during this process. These include the appropriate use of design patterns and their trades offs, the method in which code was developed, duplication of code and coupling.
 
-This is an \emph{introductory comment}.
-\LaTeX\ can typeset some very complex documents, but it is also
-\textbf{quite easy to get started}.
-Try playing around with this file and see. 
-Don't worry that this page looks very spaced out,
-\LaTeX\ arranges the page for you (much less work to do than in Word!)
-so if there was more content it would close up the gaps.
+\section{Using Java}
 
-To start a new paragraph just leave a blank line.
-If you do not like numbered sections, use the \texttt{section*\{...\}}
-environment instead.
+\section{UML diagram}
 
-\section{BNF Grammar} 
+\subsection{Analysis on UML}
 
-\begin{verbatim}
-    The verbatim environment outputs the source without changing
-    it in any way. 
-          This
-              includes line breaks
-       and indentation. 
-    It is useful to reproduce code snippets.
-\end{verbatim}
+\section{Design Concepts}
+\subsection{Abstaction and Refinement}
+One of the first areas of design concepts that we considered was abstraction. The idea of generalising the content in order to retain relevant information was considered during the creation of the various classes. For example, if we take the class, Player, it is clearly displayed that the class is only relevant to players playing the game. Through the creation of an interface, a Computer player can be stemmed from the original player class with its methods overridden and other methods added. This class has reduced the necessary information for the player which as a result, allows the class to be used for a variety of different board games for example, Checkers which shows the idea of abstraction has been considered and used.  The idea of abstraction is further shown in the Board class whereby methods such as validation checks on going past the size of the board is considered whereas checking whether a move is valid can be overridden for other games. Control hierarchy was considered during the creation of the unified modelling language diagram to improve the use of object orientation.
 
-To include maths formulas in text put them between \$ symbols like this
-$f(x) = x \times 5$.
-Or to display a formula on a line on its own you do this:
-\[
-    g(y) = y^2
-\]
+Refinement through the process of elaboration is also demonstrated throughout the program where instructions are decomposed into more detailed instructions. An excellent example of this would be in the initialisation of the Board where the board is created and subsequently, the default starting positions are added onto the board. During the start of the game, the program will call for the creation of the board which then leads to the generation of an empty board which then allows the default pieces to be added. The idea of refinement is clearly exhibited, as instructions are decomposed into more detailed instruction methods which are called by the previous method. This is an ideal augmentation to abstraction since the initial eight by eight can be generated but through the use of abstraction, the method for the default layout can be overridden for a different game, such as Chess. As a result, the difficulty of the task has been reduced thanks to the discipline of software architecture during the use of abstraction and refinement.
 
-\section{Semantics}
+\subsection{Modularity and Structural Partitioning}
+The idea of modularity has also been shown whereby the program has been split into multiple classes to maximise object orientation which allows us to effectively manage our program. Furthermore, through the use of packages, test cases are separated from the main program, to ensure test driven development is fully utilised. Both horizontal and vertical partitioning have both been used during the development of Othello. Horizontal partitioning has been used during the processing of input moves where the input is taken and passed through the Board class where the move is validated, and the Game class which carries out the move. The advantage of this is that testing, maintaining and in the future, extending the code is easy to do and there is also far less side effects in change or error propagation. The biggest issue with using horizontal partitioning is that since data is passed around throughout the program, it makes the program slightly more complex but this problem is far overshadowed by the benefits. The program has been handled in a top down approach which makes it easier to handle and maintain any changes that will or have been made.
 
-Here is a numbered list.
+\subsection{Encapsulation and Data Structures}
+An effort has also been made to conceal any methods which do not need to be visible from anything that does not need to call it. Though the use of encapsulation, the integrity of the program is also maintained and the complexity is also reduced since there are few interdependencies between modules. For example, in the Board class, certain methods are defined to be private as they are only called within the class, so visibility is minimised. Data structures are also used to simplify the implementation as well as make the program easy to understand. An arraylist has been implemented to store the directions in which pieces can be captured to make it easier to handle during processing. Furthermore, a data structure named pairwas created, which will allow the coordinates of each move to be stored and processed. This makes using the board much easier since rather than passing two separate parameters for the coordinates, they are placed in one data structure which makes the system much more robust. An enumeration is also used to store the status of each square to remove any possible amibuiguities from the program.
 
-\begin{enumerate}
+\section{Design Patterns}
+\subsection{Creational Patterns}
+\begin{itemize}
 
     \item
-    This is item 1.
+    The parts of the list are called items here too.
     
+\end{itemize}
+\subsection{Structural Patterns}
+\begin{itemize}
+
     \item
-    And this is item 2.
+    The parts of the list are called items here too.
     
-\end{enumerate}
+\end{itemize}
+\subsection{Behavioral Patterns}
+\begin{itemize}
 
-And here is a bulleted list.
-
+    \item
+    The parts of the list are called items here too.
+    
+\end{itemize}
+\subsection{Concurrency Patterns}
 \begin{itemize}
 
     \item
@@ -70,11 +66,20 @@ And here is a bulleted list.
     
 \end{itemize}
 
-Finally for this document, if you want to include a reference
-then you put it into a \texttt{thebibliography\{...\}}
-environment (see below in source file) and then 
-cite it like this \cite{lamport94}
-(you will need to run \texttt{latex} twice to get it to process the citation),
-or you can use BibTex but that is probably overkill for now.
+\section{Design Considerations}
+
+\begin{itemize}
+
+    \item Compatibility and Maintainability – As a result of using Java, the program can be executed on any computer architecture; the program is cross platform compatible. In terms of maintainability, comments have been added to further clarify any ambiguous or confusing code. Accurate identifier names have also been used so the program is easily understandable. Furthermore, due to modularity, we have independent classes which is easier to maintain.
+
+   \item Extensibility, Reusability and Modularity – New features, capabilities and modifications can be easily added into the program since we have used modularity to separate classes. This means that they can be independently tested in isolation before being integrated into the program. Furthermore, through the use of interfaces, methods can be overridden and new features can be added without changing any existing code. 
+
+   \item Robustness and Usability – The program that has been created has been designed to be robust and easily usable. If wrong input is entered when deciding on the size of the board, the player name or the player's move, accurate and helpful error statements are provided to the user. The user is subsequently asked to enter a valid input. Through the use of structural partitioning, the program demonstrates further that it is robust. The program is easy to use since it has clear and helpful commands for the user and the board is accurately depicted. 
+ 
+\end{itemize}
+
+\section{Screenshot demonstrating Othello}
 
 \end{document}
+
+
