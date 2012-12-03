@@ -1,44 +1,31 @@
 package Game;
 
-public enum Square {
-	EMPTY {
-		@Override
-	    public String toString() {
-	        return " ";
-	    }
-		
-		@Override
-		public Square opposite(){
-			return EMPTY;
-		}
-	},
-	 
-	BLACK {
-		@Override
-	    public String toString() {
-	        return "X";
-	    }
-		
-		@Override
-		public Square opposite(){
-			return WHITE;
-		}
-	},
-	WHITE {
-		@Override
-		public String toString(){
-			return "O";
-		}
-		
-		@Override
-		public Square opposite(){
-			return BLACK;
-		}
-	};
-
-	public Square opposite() {
-		return null;
+/**
+ * 
+ * This represents a square on the game board
+ *
+ */
+public class Square {
+	
+	private Piece piece;
+	
+	public Square(Piece piece)
+	{
+		this.piece = piece;
 	}
-
+	
+	public Piece getPiece()
+	{
+		return piece;
+	}
+	
+	public void setPiece(Piece piece)
+	{
+		this.piece = piece;
+	}
+	
+	public String toString(){
+		return piece.toString();
+	}
 
 }
